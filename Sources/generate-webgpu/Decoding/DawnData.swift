@@ -80,6 +80,23 @@ extension Extensibility: Decodable {
     }
 }
 
+struct Returns: Decodable {
+    var type: String
+    @DefaultFallback var optional: Bool
+
+    init(from decoder: any Decoder) throws {
+        do {
+            let container = try decoder.singleValueContainer()
+            type = try container.decode(String.self)
+            optional = false
+        } catch DecodingError.typeMismatch {
+            let container = try decoder.container(keyedBy: String.self)
+            type = try container.decode(String.self, forKey: "type")
+            optional = try container.decodeIfPresent(Bool.self, forKey: "optional") ?? false
+        }
+    }
+}
+
 
 // MARK: Custom Decoders
 
@@ -124,7 +141,7 @@ typealias RecordData = [RecordMemberData]
 struct MethodData: Taggable, Decodable {
     @DefaultFallback var tags: Set<String>
     var name: String
-    var returns: String?
+    var returns: Returns?
     @DefaultFallback var args: RecordData
 }
 
@@ -177,7 +194,7 @@ struct ConstantTypeData: TypeData, Decodable {
 struct FunctionTypeData: TypeData, Decodable {
     var category: Category
     @DefaultFallback var tags: Set<String>
-    var returns: String?
+    var returns: Returns?
     @DefaultFallback var args: RecordData
 }
 

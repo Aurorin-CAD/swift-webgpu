@@ -1,11 +1,13 @@
 class FunctionPointerType: Type {
     let returnTypeName: String?
+    let isReturnOptional: Bool
     let arguments: Record
     
     weak var returnType: Type?
     
     init(name: String, data: FunctionTypeData) {
-        returnTypeName = data.returns
+        returnTypeName = data.returns?.type
+        isReturnOptional = data.returns?.optional ?? false
         arguments = Record(data: data.args.filter { $0.isEnabled }, context: .function)
         super.init(name: name, data: data)
     }
@@ -49,7 +51,7 @@ class FunctionPointerType: Type {
         }
         
         guard let returnType = returnType else { return nil }
-        if returnType.category == .functionPointer {
+        if isReturnOptional || returnType.category == .functionPointer {
             return returnType.swiftName + "?"
         }
         return returnType.swiftName

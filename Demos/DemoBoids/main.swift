@@ -96,20 +96,24 @@ try withGLFW {
     
     
     let vertexBuffer = vertexData.withUnsafeBytes { bytes -> Buffer in
-        let buffer = device.createBuffer(descriptor: BufferDescriptor(
+        guard let buffer = device.createBuffer(descriptor: BufferDescriptor(
             usage: .vertex,
             size: UInt64(bytes.count),
-            mappedAtCreation: true))
+            mappedAtCreation: true)) else {
+                fatalError("Failed to create buffer")
+            }
         buffer.getMappedRange().copyMemory(from: bytes.baseAddress!, byteCount: bytes.count)
         buffer.unmap()
         return buffer
     }
     
     let simParamBuffer = withUnsafeBytes(of: simParams) { bytes in
-        let buffer = device.createBuffer(descriptor: BufferDescriptor(
+        guard let buffer = device.createBuffer(descriptor: BufferDescriptor(
             usage: .uniform,
             size: UInt64(bytes.count),
-            mappedAtCreation: true))
+            mappedAtCreation: true)) else {
+                fatalError("Failed to create buffer")
+            }
         buffer.getMappedRange().copyMemory(from: bytes.baseAddress!, byteCount: bytes.count)
         buffer.unmap()
         return buffer
@@ -128,10 +132,12 @@ try withGLFW {
     
     particles.withUnsafeBytes { bytes in
         for _ in 0..<2 {
-            let buffer = device.createBuffer(descriptor: BufferDescriptor(
+            guard let buffer = device.createBuffer(descriptor: BufferDescriptor(
                 usage: [.vertex, .storage],
                 size: UInt64(bytes.count),
-                mappedAtCreation: true))
+                mappedAtCreation: true)) else {
+                    fatalError("Failed to create buffer")
+                }
             buffer.getMappedRange().copyMemory(from: bytes.baseAddress!, byteCount: bytes.count)
             buffer.unmap()
             particleBuffers.append(buffer)

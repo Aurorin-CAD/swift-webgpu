@@ -104,10 +104,12 @@ try withGLFW {
                     format: window.preferredTextureFormat)])))
     
     let vertexBuffer = cubeVertices.withUnsafeBytes { vertexBytes -> Buffer in
-        let vertexBuffer = device.createBuffer(descriptor: BufferDescriptor(
+        guard let vertexBuffer = device.createBuffer(descriptor: BufferDescriptor(
             usage: .vertex,
             size: UInt64(vertexBytes.count),
-            mappedAtCreation: true))
+            mappedAtCreation: true)) else {
+                fatalError("Failed to create buffer")
+            }
         let ptr = vertexBuffer.getMappedRange(offset: 0, size: 0)
         ptr?.copyMemory(from: vertexBytes.baseAddress!, byteCount: vertexBytes.count)
         vertexBuffer.unmap()
@@ -115,10 +117,12 @@ try withGLFW {
     }
     
     let indexBuffer = cubeIndices.withUnsafeBytes { indexBytes -> Buffer in
-        let indexBuffer = device.createBuffer(descriptor: BufferDescriptor(
+        guard let indexBuffer = device.createBuffer(descriptor: BufferDescriptor(
             usage: .index,
             size: UInt64(indexBytes.count),
-            mappedAtCreation: true))
+            mappedAtCreation: true)) else {
+                fatalError("Failed to create buffer")
+            }
         let ptr = indexBuffer.getMappedRange(offset: 0, size: 0)
         ptr?.copyMemory(from: indexBytes.baseAddress!, byteCount: indexBytes.count)
         indexBuffer.unmap()
@@ -131,7 +135,7 @@ try withGLFW {
     
     let cameraBuffer = device.createBuffer(descriptor: BufferDescriptor(
         usage: [.uniform, .copyDst],
-        size: UInt64(MemoryLayout<Camera>.size)))
+        size: UInt64(MemoryLayout<Camera>.size)))!
     
     let bindGroup = device.createBindGroup(descriptor: BindGroupDescriptor(
         layout: bindGroupLayout,

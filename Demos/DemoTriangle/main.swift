@@ -87,10 +87,12 @@ try withGLFW {
     ]
     
     let vertexBuffer = vertexData.withUnsafeBytes { vertexBytes -> Buffer in
-        let vertexBuffer = device.createBuffer(descriptor: BufferDescriptor(
+        guard let vertexBuffer = device.createBuffer(descriptor: BufferDescriptor(
             usage: .vertex,
             size: UInt64(vertexBytes.count),
-            mappedAtCreation: true))
+            mappedAtCreation: true)) else {
+                fatalError("Failed to create buffer")
+            }
         let ptr = vertexBuffer.getMappedRange(offset: 0, size: 0)
         ptr?.copyMemory(from: vertexBytes.baseAddress!, byteCount: vertexBytes.count)
         vertexBuffer.unmap()

@@ -12,7 +12,7 @@ extension DefaultFallback: DefaultFallbackProtocol {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        self.wrappedValue = (try? container.decode(T.self)) ?? T()
+        self.wrappedValue = (try container.decode(T.self))
     }
 }
 
