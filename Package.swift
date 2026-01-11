@@ -2,6 +2,15 @@
 
 import PackageDescription
 
+// // Approachable Concurrency settings for Swift 6.2
+// let approachableConcurrencySettings: [SwiftSetting] = [
+//     .enableUpcomingFeature("DisableOutwardActorInference"),
+//     .enableUpcomingFeature("GlobalActorIsolatedTypesUsability"),
+//     .enableUpcomingFeature("InferIsolatedConformances"),
+//     .enableUpcomingFeature("InferSendableFromCaptures"),
+//     .enableUpcomingFeature("NonisolatedNonsendingByDefault")
+// ]
+
 let package = Package(
     name: "swift-webgpu",
     platforms: [.macOS("10.15")],
@@ -25,6 +34,7 @@ let package = Package(
         .target(
             name: "WebGPU",
             dependencies: ["CWebGPU"],
+            // swiftSettings: approachableConcurrencySettings,
             plugins: [.plugin(name: "GenerateWebGPUPlugin")]
         ),
         
@@ -39,7 +49,8 @@ let package = Package(
         
         .executableTarget(
             name: "generate-webgpu",
-            dependencies: [.product(name: "ArgumentParser", package: "swift-argument-parser")]
+            dependencies: [.product(name: "ArgumentParser", package: "swift-argument-parser")],
+            // swiftSettings: approachableConcurrencySettings
         ),
         .plugin(
             name: "GenerateWebGPUPlugin",

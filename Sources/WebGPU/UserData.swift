@@ -28,3 +28,13 @@ class UserData<T> {
         return userData.value
     }
 }
+
+// Add @unchecked Sendable conformance for all WebGPU types
+extension Queue: @unchecked Sendable {}
+extension Instance: @unchecked Sendable {}
+extension Surface: @unchecked Sendable {}
+extension SurfaceTexture: @unchecked Sendable {}
+extension Texture: @unchecked Sendable {}
+extension TextureView: @unchecked Sendable {}
+extension RenderPassColorAttachment: @unchecked Sendable {}
+extension RenderPassDepthStencilAttachment: @unchecked Sendable {}

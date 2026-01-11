@@ -3,7 +3,7 @@ import Foundation
 
 @main
 struct GenerateWebGPU: ParsableCommand {
-    static var configuration = CommandConfiguration(commandName: "generate-webgpu")
+    static let configuration = CommandConfiguration(commandName: "generate-webgpu")
     
     @Option(help: "Path to dawn.json", transform: URL.init(fileURLWithPath:))
     var dawnJson: URL
